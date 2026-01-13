@@ -1,0 +1,27 @@
+# Personal Overrides (Copy to CLAUDE.local.md)
+
+This file is for personal customizations that should NOT be committed to Git.
+Copy this file to `CLAUDE.local.md` and customize as needed.
+
+## Personal Info
+
+- **Name**: [Your name]
+- **Timezone**: [Your timezone]
+- **Work Hours**: [Your typical work hours]
+
+## Preferences
+
+- **Morning Routine Time**: [e.g., 7:00 AM]
+- **Evening Reflection Time**: [e.g., 9:00 PM]
+- **Weekly Review Day**: [e.g., Sunday]
+
+## Custom Tags
+
+Add any personal tags you want to use:
+- `#personal/health`
+- `#personal/finance`
+- `#work/project-x`
+
+## Notes
+
+Add any personal notes or reminders for Claude here.

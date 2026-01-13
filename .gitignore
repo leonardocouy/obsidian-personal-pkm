@@ -1,0 +1,11 @@
+# Personal overrides (keep out of public repo)
+CLAUDE.local.md
+
+# Obsidian
+.obsidian/workspace*
+.obsidian/cache
+.trash/
+
+# System
+.DS_Store
+Thumbs.db
