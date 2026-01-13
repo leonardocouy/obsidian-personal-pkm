@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Read(*)",
+      "Write(Daily Notes/**)",
+      "Write(Templates/**)",
+      "Write(Inbox/**)",
+      "Write(Archives/**)",
+      "Edit(Daily Notes/**)",
+      "Edit(Templates/**)",
+      "Edit(Inbox/**)",
+      "Edit(Archives/**)"
+    ],
+    "deny": [
+      "Edit(.claude/**)",
+      "Write(.git/**)",
+      "Bash(rm -rf:*)"
+    ]
+  }
+}
