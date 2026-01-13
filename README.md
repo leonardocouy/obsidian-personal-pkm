@@ -1,9 +1,10 @@
 # Obsidian Personal PKM
 
-A minimal personal knowledge management system designed to work seamlessly with [Claude Code](https://claude.ai/code).
+A minimal personal knowledge management system designed to work seamlessly with [Claude Code](https://claude.ai/code) and [TaskNotes](https://github.com/callumalpass/tasknotes) for advanced task management.
 
 ## Features
 
+- **Task Management** - Individual task files with YAML metadata, referenced via wikilinks
 - **Daily Notes** - Structured daily planning with automatic task carryover
 - **Morning/Evening Workflow** - Separate skills for morning setup and evening review
 - **Blocker Detection** - Weekly reviews identify stuck tasks (3+ days incomplete)
@@ -24,17 +25,30 @@ cd obsidian-personal-pkm
 
 Open the folder as an Obsidian vault.
 
-### 3. Personalize
+### 3. Install Required Plugins
+
+- **Periodic Notes** - For daily/weekly note structure
+- **TaskNotes** - For task file management (each task = individual file)
+
+### 4. Personalize
 
 Copy `CLAUDE.local.md.template` to `CLAUDE.local.md` and customize with your preferences.
 
-### 4. Start Using
+### 5. Start Using
 
 ```bash
 # In Claude Code
+
+# Task Management
+/task-create "Task Name"  # Create a new task file
+/task-done "Task Name"    # Mark task as completed
+
+# Daily Workflow
 /daily-setup    # Morning: create note, pull yesterday's tasks
 /daily-review   # Evening: reflect, prepare tomorrow
 /weekly         # Weekly review with blocker detection
+
+# Utilities
 /push           # Commit changes
 /onboard        # Load vault context
 ```
@@ -43,27 +57,103 @@ Copy `CLAUDE.local.md.template` to `CLAUDE.local.md` and customize with your pre
 
 ```
 .
-├── Daily Notes/
+├── 00_Inbox/
+│   └── Tasks/              # TaskNotes task files
+│       ├── Review PR 123.md
+│       └── Update docs.md
+├── 20_Daily Notes/
 │   └── YYYY/
 │       └── Mnn/
 │           ├── YYYY-MM-DD.md    # Daily notes
 │           └── YYYY-Www.md      # Weekly reviews
-├── Templates/      # Reusable note templates
-├── Inbox/          # Quick captures to process
-├── Archives/       # Old/completed notes
-├── .claude/        # Claude Code configuration
-│   ├── skills/     # Automation skills
-│   └── agents/     # Specialized AI agents
-├── CLAUDE.md       # AI context and instructions
-└── README.md       # This file
+├── Templates/
+│   ├── Daily Template.md   # Daily note structure
+│   └── Task Template.md    # Task file structure
+├── Archives/               # Old/completed notes
+├── .claude/
+│   ├── skills/             # Automation skills
+│   ├── commands/           # Quick commands
+│   └── agents/             # Specialized AI agents
+├── CLAUDE.md               # AI context and instructions
+└── README.md               # This file
+```
+
+## Task Management
+
+Tasks are stored as **individual markdown files** in `00_Inbox/Tasks/` and referenced via **wikilinks** in daily notes.
+
+### Task File Format
+
+```yaml
+---
+tags:
+  - task
+status: open              # open, in-progress, done
+priority: medium          # low, medium, high
+due: 2026-01-20           # optional deadline
+scheduled: 2026-01-15     # when to work on it
+projects: []              # optional project links
+---
+
+# Task Name
+
+Task description and notes.
+```
+
+### Task References in Daily Notes
+
+```markdown
+## Tasks
+
+### Must Do
+- [ ] [[Review PR 123]]
+- [ ] [[Fix production bug]]
+
+### Work
+- [ ] [[Update documentation]]
+- [x] [[Write tests]] ✅ 2026-01-13
+```
+
+### Why Task Files?
+
+- **Backlinks** - See all daily notes mentioning a task
+- **Rich Metadata** - Priority, due dates, projects in YAML
+- **TaskNotes Integration** - Inline widgets, views, filtering
+- **Portability** - Plain markdown, no vendor lock-in
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `/task-create` | Create new task file with YAML and add to daily note |
+| `/task-done` | Mark task complete, update daily note and task file |
+
+### `/task-create`
+
+Creates a new task file and adds a wikilink to today's daily note.
+
+```bash
+/task-create "Review PR 123"              # Basic task
+/task-create "Fix bug" --priority high    # With priority
+/task-create "Deploy" --due 2026-01-20    # With due date
+/task-create                              # Interactive mode
+```
+
+### `/task-done`
+
+Marks a task as completed in both the daily note and task file.
+
+```bash
+/task-done "Review PR 123"   # Complete specific task
+/task-done                   # Interactive: select from open tasks
 ```
 
 ## Skills
 
 | Skill | Description |
 |-------|-------------|
-| `/daily-setup` | Morning: create note, pull incomplete tasks, show yesterday summary |
-| `/daily-review` | Evening: reflect on day, set tomorrow's priority |
+| `/daily-setup` | Morning: create note, pull incomplete tasks (wikilinks), auto-reschedule overdue |
+| `/daily-review` | Evening: reflect on day, add completion timestamps, update task file status |
 | `/weekly` | Weekly review with blocker detection (tasks 3+ days stuck) |
 | `/push` | Stage, commit, and push all changes with smart messages |
 | `/onboard` | Load vault context at start of session |
@@ -71,50 +161,37 @@ Copy `CLAUDE.local.md.template` to `CLAUDE.local.md` and customize with your pre
 ### `/daily-setup`
 
 Morning routine that:
-- Creates today's note in `Daily Notes/YYYY/Mnn/`
-- Reads yesterday's note
-- Pulls incomplete tasks automatically
+- Creates today's note in `20_Daily Notes/YYYY/Mnn/`
+- Reads yesterday's note for incomplete task wikilinks
+- Reads task files to check scheduled dates
+- Auto-reschedules overdue tasks (updates `scheduled` in YAML)
 - Shows yesterday's summary
 
 ```bash
 /daily-setup  # Start your morning
 ```
 
-**Daily Note Template includes:**
-- **Yesterday Summary** - Auto-populated from yesterday
-- **Tasks to Continue** - Incomplete tasks pulled automatically
-- **Focus** - The ONE thing for the day
-- **Tasks** - Organized by priority (Must Do, Work, Personal)
-- **Ideas & Thoughts** - Capture section
-- **Notes from Today** - General notes
-- **Reflection** - End of day review
-- **Related** - Links to adjacent days
-
 ### `/daily-review`
 
 Evening routine that:
-- Opens today's note
+- Reviews task completion from today's note
+- Adds completion timestamps: `- [x] [[Task]] ✅ 2026-01-13`
+- Updates task file status: `status: open` → `status: done`
 - Guides reflection with prompts
-- Helps set tomorrow's priority
+- Sets tomorrow's priority
 
 ```bash
 /daily-review  # End your day
 ```
 
-**Reflection prompts:**
-- What went well today?
-- What could be better?
-- What did I learn?
-- What's tomorrow's #1 priority?
-
 ### `/weekly`
 
 Weekly review with blocker detection:
 - Analyzes past 7 days of daily notes
-- Calculates task completion rate
-- **Detects blockers** - Tasks appearing 3+ days without completion
+- Detects blockers - task wikilinks appearing 3+ days without completion
+- Reads task files for priority/due date context
+- Calculates completion rate
 - Creates weekly review note
-- Plans next week
 
 ```bash
 /weekly  # Sunday review
@@ -123,8 +200,11 @@ Weekly review with blocker detection:
 **Blocker Detection:**
 ```markdown
 ## Blockers (3+ days without completion)
-- [ ] Review PR #123 — 4 days consecutive
-- [ ] Update documentation — 3 days consecutive
+
+| Task | Days Stuck | Priority | Due |
+|------|------------|----------|-----|
+| [[Review PR 123]] | 4 days | high | 2026-01-15 |
+| [[Update docs]] | 3 days | medium | - |
 ```
 
 ### `/push`
@@ -150,7 +230,7 @@ Loads vault context:
 
 ```bash
 /onboard           # Full context
-/onboard Inbox     # Specific folder
+/onboard 00_Inbox  # Specific folder
 ```
 
 ## Agents
@@ -169,32 +249,33 @@ Specialized agent for vault maintenance:
 
 ### Morning Routine
 
-1. `/daily-setup` - Create note with yesterday's context
-2. Review tasks to continue
+1. `/daily-setup` - Create note with yesterday's context and tasks
+2. Review tasks to continue (auto-rescheduled if overdue)
 3. Set your ONE focus
-4. Add new tasks
+4. Add new tasks with `/task-create`
 5. `/push` - Commit changes
 
 ### During the Day
 
-- Quick capture ideas in `Inbox/`
+- Create tasks with `/task-create "New task"`
+- Complete tasks with `/task-done "Task name"`
 - Update daily note as needed
-- Mark tasks complete
 
 ### Evening Routine
 
 1. `/daily-review` - Reflect on day
 2. Answer reflection prompts
-3. Set tomorrow's priority
-4. `/push` - Commit changes
+3. Review task completion (timestamps added automatically)
+4. Set tomorrow's priority
+5. `/push` - Commit changes
 
 ### Weekly Review (Sunday)
 
 1. `/weekly` - Run review with blocker detection
 2. Celebrate wins
-3. Address blockers
+3. Address blockers (break down, delegate, or drop)
 4. Plan next week
-5. Process `Inbox/`
+5. Process `00_Inbox/`
 6. `/push` - Commit changes
 
 ## Customization
@@ -215,7 +296,9 @@ Create `CLAUDE.local.md` (gitignored) for personal settings:
 
 ### Custom Template
 
-Edit `Templates/Daily Template.md` to match your preferred structure.
+Edit templates in `Templates/` folder:
+- `Daily Template.md` - Daily note structure
+- `Task Template.md` - Task file structure
 
 ### Add Custom Skills
 
@@ -259,7 +342,8 @@ Already configured to ignore:
 ## Requirements
 
 - [Obsidian](https://obsidian.md/) - Note-taking app
-- [Periodic Notes](https://github.com/liamcain/obsidian-periodic-notes) - Obsidian plugin for daily/weekly/monthly notes
+- [Periodic Notes](https://github.com/liamcain/obsidian-periodic-notes) - Obsidian plugin for daily/weekly notes
+- [TaskNotes](https://github.com/callumalpass/tasknotes) - Obsidian plugin for task management
 - [Claude Code](https://claude.ai/code) - AI coding assistant
 - Git - Version control
 

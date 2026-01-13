@@ -11,8 +11,8 @@ tags: daily-note
 > Auto-populated by /daily-setup
 
 ## Tasks to Continue
-> Incomplete tasks from yesterday (auto-pulled)
-- [ ]
+> Incomplete tasks from yesterday (auto-pulled via wikilinks)
+> Format: - [ ] [[Task Name]]
 
 ---
 
@@ -25,6 +25,9 @@ tags: daily-note
 ---
 
 ## Tasks
+
+> Use wikilinks to reference task files: - [ ] [[Task Name]]
+> Create new tasks with /task-create
 
 ### Must Do
 - [ ]
