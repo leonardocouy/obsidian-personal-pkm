@@ -259,6 +259,7 @@ Already configured to ignore:
 ## Requirements
 
 - [Obsidian](https://obsidian.md/) - Note-taking app
+- [Periodic Notes](https://github.com/liamcain/obsidian-periodic-notes) - Obsidian plugin for daily/weekly/monthly notes
 - [Claude Code](https://claude.ai/code) - AI coding assistant
 - Git - Version control
 
