@@ -4,10 +4,11 @@ A minimal personal knowledge management system designed to work seamlessly with 
 
 ## Features
 
-- **Daily Notes** - Structured daily planning with focus, tasks, and reflection
-- **Inbox Processing** - GTD-style capture and organize workflow
+- **Daily Notes** - Structured daily planning with automatic task carryover
+- **Morning/Evening Workflow** - Separate skills for morning setup and evening review
+- **Blocker Detection** - Weekly reviews identify stuck tasks (3+ days incomplete)
+- **Organized Structure** - Notes organized by `YYYY/Mnn/` for scalability
 - **Git Integration** - Version control with smart commit messages
-- **Claude Code Skills** - AI-powered automation for common workflows
 - **Note Organization** - Agent for vault maintenance and hygiene
 
 ## Quick Start
@@ -15,7 +16,7 @@ A minimal personal knowledge management system designed to work seamlessly with 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/obsidian-personal-pkm.git
+git clone https://github.com/leonardocouy/obsidian-personal-pkm.git
 cd obsidian-personal-pkm
 ```
 
@@ -31,17 +32,22 @@ Copy `CLAUDE.local.md.template` to `CLAUDE.local.md` and customize with your pre
 
 ```bash
 # In Claude Code
-/daily    # Create today's note
-/weekly   # Run weekly review
-/push     # Commit changes
-/onboard  # Load vault context
+/daily-setup    # Morning: create note, pull yesterday's tasks
+/daily-review   # Evening: reflect, prepare tomorrow
+/weekly         # Weekly review with blocker detection
+/push           # Commit changes
+/onboard        # Load vault context
 ```
 
 ## Structure
 
 ```
 .
-├── Daily Notes/    # One note per day (YYYY-MM-DD.md)
+├── Daily Notes/
+│   └── YYYY/
+│       └── Mnn/
+│           ├── YYYY-MM-DD.md    # Daily notes
+│           └── YYYY-Www.md      # Weekly reviews
 ├── Templates/      # Reusable note templates
 ├── Inbox/          # Quick captures to process
 ├── Archives/       # Old/completed notes
@@ -56,43 +62,76 @@ Copy `CLAUDE.local.md.template` to `CLAUDE.local.md` and customize with your pre
 
 | Skill | Description |
 |-------|-------------|
-| `/daily` | Create or open today's daily note with structured template |
-| `/weekly` | Run weekly review: analyze past week, plan next week |
+| `/daily-setup` | Morning: create note, pull incomplete tasks, show yesterday summary |
+| `/daily-review` | Evening: reflect on day, set tomorrow's priority |
+| `/weekly` | Weekly review with blocker detection (tasks 3+ days stuck) |
 | `/push` | Stage, commit, and push all changes with smart messages |
 | `/onboard` | Load vault context at start of session |
 
-### `/daily`
+### `/daily-setup`
 
-Creates a daily note with:
+Morning routine that:
+- Creates today's note in `Daily Notes/YYYY/Mnn/`
+- Reads yesterday's note
+- Pulls incomplete tasks automatically
+- Shows yesterday's summary
+
+```bash
+/daily-setup  # Start your morning
+```
+
+**Daily Note Template includes:**
+- **Yesterday Summary** - Auto-populated from yesterday
+- **Tasks to Continue** - Incomplete tasks pulled automatically
 - **Focus** - The ONE thing for the day
 - **Tasks** - Organized by priority (Must Do, Work, Personal)
 - **Ideas & Thoughts** - Capture section
-- **Notes from Today** - Meetings and important info
+- **Notes from Today** - General notes
 - **Reflection** - End of day review
 - **Related** - Links to adjacent days
 
+### `/daily-review`
+
+Evening routine that:
+- Opens today's note
+- Guides reflection with prompts
+- Helps set tomorrow's priority
+
 ```bash
-/daily                    # Create/open today's note
-/daily "morning routine"  # With specific context
+/daily-review  # End your day
 ```
+
+**Reflection prompts:**
+- What went well today?
+- What could be better?
+- What did I learn?
+- What's tomorrow's #1 priority?
 
 ### `/weekly`
 
-Facilitates weekly review:
-- Reviews past 7 days of daily notes
-- Identifies wins and challenges
-- Plans next week's priorities
-- Suggests archiving old notes
+Weekly review with blocker detection:
+- Analyzes past 7 days of daily notes
+- Calculates task completion rate
+- **Detects blockers** - Tasks appearing 3+ days without completion
+- Creates weekly review note
+- Plans next week
 
 ```bash
-/weekly  # Run full weekly review
+/weekly  # Sunday review
+```
+
+**Blocker Detection:**
+```markdown
+## Blockers (3+ days without completion)
+- [ ] Review PR #123 — 4 days consecutive
+- [ ] Update documentation — 3 days consecutive
 ```
 
 ### `/push`
 
 Smart Git workflow:
 - Stages all changes
-- Creates meaningful commit messages based on changed files
+- Creates meaningful commit messages
 - Pulls and pushes to remote
 - Never force pushes
 
@@ -130,10 +169,11 @@ Specialized agent for vault maintenance:
 
 ### Morning Routine
 
-1. `/daily` - Create today's note
-2. Set your ONE focus
-3. List must-do tasks
-4. `/push` - Commit changes
+1. `/daily-setup` - Create note with yesterday's context
+2. Review tasks to continue
+3. Set your ONE focus
+4. Add new tasks
+5. `/push` - Commit changes
 
 ### During the Day
 
@@ -143,20 +183,19 @@ Specialized agent for vault maintenance:
 
 ### Evening Routine
 
-1. Open daily note
-2. Complete reflection section
-3. Identify tomorrow's priority
+1. `/daily-review` - Reflect on day
+2. Answer reflection prompts
+3. Set tomorrow's priority
 4. `/push` - Commit changes
 
 ### Weekly Review (Sunday)
 
-1. `/weekly` - Run guided review
+1. `/weekly` - Run review with blocker detection
 2. Celebrate wins
-3. Learn from challenges
+3. Address blockers
 4. Plan next week
 5. Process `Inbox/`
-6. Archive old notes
-7. `/push` - Commit changes
+6. `/push` - Commit changes
 
 ## Customization
 
@@ -200,7 +239,7 @@ user-invocable: true
 The vault is designed for Git version control:
 
 ```bash
-# Initial setup
+# Initial setup (already done if you cloned)
 git init
 git remote add origin YOUR_REPO_URL
 
@@ -225,7 +264,9 @@ Already configured to ignore:
 
 ## Credits
 
-Inspired by [obsidian-claude-pkm](https://github.com/ballred/obsidian-claude-pkm) by ballred.
+Inspired by:
+- [obsidian-claude-pkm](https://github.com/ballred/obsidian-claude-pkm) by ballred
+- [collaborator/pkm-framework](https://github.com/devkade/collaborator) by devkade
 
 ## License
 

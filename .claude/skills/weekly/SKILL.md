@@ -1,17 +1,17 @@
 ---
 name: weekly
-description: Facilitate weekly review process with reflection and planning. Review past week's daily notes, identify patterns, plan next week. Use on Sundays or whenever doing weekly planning.
+description: Weekly review with blocker detection. Analyze past 7 days, identify stuck tasks (3+ days), plan next week. Use on Sundays or whenever doing weekly planning.
 allowed-tools: Read, Write, Edit, Glob, Grep
 user-invocable: true
 ---
 
 # Weekly Review Skill
 
-Facilitates your weekly review process by analyzing the past week's daily notes and helping plan the next week.
+Facilitates your weekly review process by analyzing the past week's daily notes, detecting blockers, and helping plan the next week.
 
 ## Usage
 
-Invoke with `/weekly` or ask Claude to help with your weekly review.
+Invoke with `/weekly` on Sundays or whenever you do weekly planning.
 
 ```
 /weekly
@@ -19,58 +19,56 @@ Invoke with `/weekly` or ask Claude to help with your weekly review.
 
 ## What This Skill Does
 
-1. **Reviews Daily Notes**
-   - Reads last 7 days of daily notes
-   - Identifies completed and incomplete tasks
-   - Spots patterns and themes
+### 1. Reviews Daily Notes
+- Reads last 7 days of daily notes from `Daily Notes/YYYY/Mnn/`
+- Counts completed vs incomplete tasks per day
+- Calculates completion rate
 
-2. **Guides Reflection**
-   - Reviews accomplishments
-   - Identifies challenges
-   - Captures lessons learned
+### 2. Detects Blockers
+- Identifies tasks appearing 3+ days without completion
+- Lists as blockers that need attention
+- Helps surface systemic issues
 
-3. **Plans Next Week**
-   - Sets priorities for the week
-   - Identifies key tasks
-   - Suggests focus areas
+### 3. Guides Reflection
+- Reviews accomplishments
+- Identifies challenges and patterns
+- Captures lessons learned
 
-## Review Process
+### 4. Plans Next Week
+- Creates weekly review note in `Daily Notes/YYYY/Mnn/YYYY-Www.md`
+- Sets ONE focus for the week
+- Identifies key tasks
 
-### Step 1: Reflection (10 minutes)
-- Review daily notes from past week
-- Identify wins and challenges
-- Capture lessons learned
+## Blocker Detection
 
-### Step 2: Planning (10 minutes)
-- Set ONE big thing for the week
-- Identify key tasks
-- Block time for important work
+Tasks that appear in 3 or more days without being completed are flagged:
 
-## Interactive Prompts
+```markdown
+## Blockers (3+ days without completion)
+- [ ] Review PR #123 — 4 days consecutive
+- [ ] Update documentation — 3 days consecutive
 
-The skill guides you through:
-
-1. **"What were your top 3 wins this week?"**
-   - Celebrates progress
-   - Builds momentum
-   - Documents achievements
-
-2. **"What were your main challenges?"**
-   - Identifies obstacles
-   - Plans solutions
-   - Learns from difficulties
-
-3. **"What's your ONE focus for next week?"**
-   - Forces prioritization
-   - Creates focus
-   - Drives meaningful progress
+These tasks may need:
+- Breaking into smaller steps
+- Removing blockers
+- Delegating
+- Dropping if not important
+```
 
 ## Weekly Review Output
 
-```markdown
-# Weekly Review: YYYY-MM-DD
+The skill creates a weekly review note:
 
-## Last Week's Wins
+```markdown
+# Weekly Review: 2025-W02
+
+## Summary
+- Days reviewed: 7
+- Tasks completed: 23
+- Tasks incomplete: 8
+- Completion rate: 74%
+
+## This Week's Wins
 1.
 2.
 3.
@@ -78,6 +76,10 @@ The skill guides you through:
 ## Challenges & Lessons
 - Challenge:
 - Lesson:
+
+## Blockers (3+ days without completion)
+- [ ] Task X — 4 days consecutive
+- [ ] Task Y — 3 days consecutive
 
 ## Next Week
 
@@ -92,15 +94,22 @@ The skill guides you through:
 ## Notes
 ```
 
-## Automation Features
+## Review Process
 
-### Auto-Archive
-Suggest moving daily notes older than 30 days to Archives.
-
-### Pattern Detection
+### Step 1: Data Collection (automatic)
+- Scan daily notes from past 7 days
+- Extract task completion data
 - Identify recurring incomplete tasks
-- Spot productivity patterns
-- Highlight common themes
+
+### Step 2: Reflection (10 minutes)
+- Review wins and celebrate progress
+- Analyze challenges and extract lessons
+- Acknowledge blockers
+
+### Step 3: Planning (10 minutes)
+- Set ONE focus for next week
+- Identify 3-5 key tasks
+- Decide what to do with blockers
 
 ## Best Practices
 
@@ -108,6 +117,13 @@ Suggest moving daily notes older than 30 days to Archives.
 - Same day each week (Sunday recommended)
 - Same time if possible
 - Treat as non-negotiable
+
+### Handle Blockers
+For each blocker, decide:
+- **Break down**: Split into smaller tasks
+- **Unblock**: Identify and remove obstacle
+- **Delegate**: Assign to someone else
+- **Drop**: Remove if no longer important
 
 ### Follow-through
 - Commit changes after review (`/push`)
@@ -117,6 +133,7 @@ Suggest moving daily notes older than 30 days to Archives.
 ## Integration
 
 Works with:
-- `/daily` - Reviews daily notes from the week
+- `/daily-setup` - Creates daily notes for the week
+- `/daily-review` - Evening reflections aggregate here
 - `/push` - Commit after completing review
 - `/onboard` - Load context for informed review

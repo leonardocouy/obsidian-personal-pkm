@@ -5,22 +5,27 @@ This is a personal knowledge management vault designed to work seamlessly with C
 ## Vault Structure
 
 ```
-00-personal/
-├── Daily Notes/    # Daily notes (YYYY-MM-DD.md)
-├── Templates/      # Reusable templates
-├── Inbox/          # Quick captures to process later
-├── Archives/       # Old/completed notes
-└── .claude/        # Claude Code integration
-    ├── skills/     # /daily, /weekly, /push, /onboard
-    └── agents/     # note-organizer
+.
+├── Daily Notes/           # Organized by year/month
+│   └── YYYY/
+│       └── Mnn/
+│           ├── YYYY-MM-DD.md    # Daily notes
+│           └── YYYY-Www.md      # Weekly reviews
+├── Templates/             # Reusable templates
+├── Inbox/                 # Quick captures to process later
+├── Archives/              # Old/completed notes
+└── .claude/               # Claude Code integration
+    ├── skills/            # /daily-setup, /daily-review, /weekly, /push, /onboard
+    └── agents/            # note-organizer
 ```
 
 ## Available Skills
 
 | Skill | Description | Usage |
 |-------|-------------|-------|
-| `/daily` | Create/manage daily notes | Morning planning, evening reflection |
-| `/weekly` | Weekly review and planning | Sunday reviews, week planning |
+| `/daily-setup` | Morning routine - create note, pull yesterday's tasks | Start of day |
+| `/daily-review` | Evening routine - reflect, prepare tomorrow | End of day |
+| `/weekly` | Weekly review with blocker detection | Sunday reviews |
 | `/push` | Commit and push to Git | After making changes |
 | `/onboard` | Load vault context | Start of session |
 
@@ -33,11 +38,12 @@ This is a personal knowledge management vault designed to work seamlessly with C
 ## Conventions
 
 ### File Naming
-- Daily notes: `YYYY-MM-DD.md` (e.g., `2024-01-15.md`)
+- Daily notes: `YYYY-MM-DD.md` in `Daily Notes/YYYY/Mnn/`
+- Weekly reviews: `YYYY-Www.md` in same folder as daily notes
 - Templates: Descriptive name with "Template" suffix
 
 ### Folders
-- `Daily Notes/` - One file per day, created via `/daily`
+- `Daily Notes/YYYY/Mnn/` - Organized by year and month
 - `Inbox/` - Quick captures, processed regularly
 - `Templates/` - Reusable note templates
 - `Archives/` - Old notes, completed items
@@ -50,24 +56,27 @@ This is a personal knowledge management vault designed to work seamlessly with C
 ## Workflow
 
 ### Morning
-1. `/daily` - Create today's note
-2. Set focus and tasks
-3. `/push` - Commit changes
+1. `/daily-setup` - Create today's note with yesterday's context
+2. Review tasks to continue
+3. Set ONE focus
+4. `/push` - Commit changes
 
 ### During Day
 - Capture ideas in Inbox/
 - Update daily note as needed
 
 ### Evening
-1. Open daily note
-2. Complete reflection section
-3. `/push` - Commit changes
+1. `/daily-review` - Reflect on day
+2. Complete reflection prompts
+3. Set tomorrow's priority
+4. `/push` - Commit changes
 
 ### Weekly
 1. `/weekly` - Run weekly review
-2. Process Inbox/
-3. Archive old notes
-4. `/push` - Commit changes
+2. Review blockers (tasks 3+ days incomplete)
+3. Plan next week
+4. Process Inbox/
+5. `/push` - Commit changes
 
 ## Communication
 
@@ -77,8 +86,12 @@ This is a personal knowledge management vault designed to work seamlessly with C
 
 ## Notes for Claude
 
-- Always check if daily note exists before creating
+- Daily notes go in `Daily Notes/YYYY/Mnn/YYYY-MM-DD.md`
+- Weekly reviews go in `Daily Notes/YYYY/Mnn/YYYY-Www.md`
+- Always check if note exists before creating
 - Use template from `Templates/Daily Template.md`
+- `/daily-setup` pulls incomplete tasks from yesterday automatically
+- `/weekly` detects blockers (tasks appearing 3+ days without completion)
 - Respect user's folder structure
 - Ask before moving or deleting files
 - Commit changes with meaningful messages

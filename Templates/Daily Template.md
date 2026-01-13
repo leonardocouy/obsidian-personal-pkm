@@ -7,6 +7,15 @@ tags: daily-note
 
 ---
 
+## Yesterday Summary
+> Auto-populated by /daily-setup
+
+## Tasks to Continue
+> Incomplete tasks from yesterday (auto-pulled)
+- [ ]
+
+---
+
 ## Focus
 
 > What's the ONE thing that would make today a win?
@@ -37,12 +46,6 @@ tags: daily-note
 
 ## Notes from Today
 
-### Meetings
-- **[Meeting]:**
-  - Key points:
-  - Action items:
-
-### Notes
 -
 
 ---
